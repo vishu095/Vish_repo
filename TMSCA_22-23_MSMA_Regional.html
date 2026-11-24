@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2022-2023 TMSCA Middle School Mathematics Regional Test</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f6f9;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  @media print {
+    body { display: none !important; }
+  }
+  input, button, label {
+    -webkit-user-select: auto;
+    user-select: auto;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0f172a;
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .timer {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: #1e293b;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #334155;
+  }
+  .timer.warning {
+    background: #7f1d1d;
+    border-color: #ef4444;
+    color: #fecaca;
+  }
+  .container {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 16px 60px;
+  }
+  .start-screen {
+    background: #fff;
+    border-radius: 12px;
+    padding: 36px 28px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    text-align: center;
+    max-width: 560px;
+    margin: 48px auto;
+  }
+  .start-screen h2 {
+    margin-top: 0;
+    color: #0f172a;
+  }
+  .start-screen p {
+    color: #475569;
+    line-height: 1.6;
+  }
+  .student-input {
+    margin: 20px 0;
+    text-align: left;
+  }
+  .student-input label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #334155;
+  }
+  .student-input input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+  }
+  .btn {
+    display: inline-block;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn:hover {
+    background: #1d4ed8;
+  }
+  .btn-secondary {
+    background: #475569;
+  }
+  .btn-secondary:hover {
+    background: #334155;
+  }
+  .hidden {
+    display: none !important;
+  }
+  .question-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    border-left: 4px solid #cbd5e1;
+  }
+  .question-card.answered {
+    border-left-color: #2563eb;
+  }
+  .question-card.correct {
+    border-left-color: #16a34a;
+    background: #f0fdf4;
+  }
+  .question-card.wrong {
+    border-left-color: #dc2626;
+    background: #fef2f2;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .option-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #f8fafc;
+    transition: all 0.12s;
+  }
+  .option-label:hover {
+    background: #eff6ff;
+    border-color: #93c5fd;
+  }
+  .clear-btn {
+    margin-top: 10px;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+  .submit-bar {
+    text-align: center;
+    margin-top: 32px;
+  }
+  .results-panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    margin-top: 28px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .score-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+  .score-box .val {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .score-box .lbl {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9rem;
+  }
+  th, td {
+    border: 1px solid #e2e8f0;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  th {
+    background: #f1f5f9;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>2022-2023 TMSCA Middle School Mathematics Regional Test</h1>
+  <div class="header-controls">
+    <span id="studentDisplay"></span>
+    <div id="timer" class="timer">40:00</div>
+  </div>
+</header>
+
+<div class="container">
+  <div id="startScreen" class="start-screen">
+    <h2>2022-2023 TMSCA Middle School Mathematics Regional Test</h2>
+    <p>
+      <strong>50 Questions</strong> &bull; <strong>40 Minutes</strong><br>
+      Scoring: <strong>+5</strong> Correct &bull; <strong>&minus;2</strong> Wrong &bull; <strong>0</strong> Skipped<br>
+      Calculators are not permitted.
+    </p>
+    <div class="student-input">
+      <label for="studentName">Student Name (Required):</label>
+      <input type="text" id="studentName" placeholder="Enter your full name">
+    </div>
+    <button id="startBtn" class="btn">Start Exam</button>
+  </div>
+
+  <div id="testArea" class="hidden">
+    <form id="quizForm"></form>
+    <div class="submit-bar">
+      <button type="button" id="gradeBtn" class="btn">Grade Test</button>
+    </div>
+  </div>
+
+  <div id="resultsPanel" class="results-panel hidden">
+    <h2>Official Test Results</h2>
+    <div id="scoreSummary" class="score-grid"></div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+      <button type="button" id="emailBtn" class="btn">Send Results to vishwanath.as@gmail.com</button>
+      <button type="button" id="copyBtn" class="btn btn-secondary">Copy Results Summary</button>
+    </div>
+    <div id="breakdownTable"></div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [{"q": "56 1/2 &minus; 47 4/5 =", "opts": ["9 3/10", "9 1/5", "8 2/5", "8 4/7", "8 7/10"]}, {"q": "11.003 &minus; 8.9 = _____ (nearest tenth)", "opts": ["3.1", "2.9", "2.7", "2.3", "2.1"]}, {"q": "9 &times; 11 &times; 13 =", "opts": ["1,287", "1,391", "1,297", "1,397", "1,227"]}, {"q": "2,456 &divide; (17 &minus; 13) =", "opts": ["588", "614", "634", "688", "606"]}, {"q": "A recipe calls for 6 1/2 cups of water, 5 1/3 cups of flour and 3/4 cup of salt. How many cups of ingredients does the recipe need?", "opts": ["12 3/8 cups", "11 5/8 cups", "11 5/12 cups", "12 7/12 cups", "12 5/8 cups"]}, {"q": "What is the area of the non-shaded region in a right triangle (base 24, height 10, hypotenuse 26) containing a shaded 9-by-3 rectangle?", "opts": ["120 units<sup>2</sup>", "93 units<sup>2</sup>", "103 units<sup>2</sup>", "54 units<sup>2</sup>", "147 units<sup>2</sup>"]}, {"q": "55,000 milliliters = _____ hectoliters", "opts": ["55", "5.5", "550", "0.055", "0.55"]}, {"q": "In a neighborhood, 7/20 of the homes have exactly three trees, and the rest of the homes only have 1 tree. Which percentage is equivalent to the portion of homes with exactly one tree?", "opts": ["65%", "55%", "45%", "35%", "75%"]}, {"q": "m&angle;A = 56&deg;. What is the sum of the complement and supplement of &angle;A?", "opts": ["154&deg;", "124&deg;", "158&deg;", "134&deg;", "138&deg;"]}, {"q": "17 quarters + 9 dimes + 6 nickels + 10 pennies = 12 quarters + 13 dimes + 20 nickels + _____ pennies", "opts": ["20", "15", "30", "25", "35"]}, {"q": "What is the unit rate of spending $153.00 for three-dozen gourmet candy bars?", "opts": ["$3.75", "$4.75", "$4.25", "$3.50", "$4.50"]}, {"q": "What is the sum of the distinct prime factors of the number 840?", "opts": ["17", "21", "18", "23", "19"]}, {"q": "What is the remainder when the sum of 462 and 777 is divided by 9?", "opts": ["2", "5", "3", "6", "4"]}, {"q": "If a = 8 and the side length of an equilateral triangle is 5a + 7, what is the triangle's perimeter?", "opts": ["65 units", "47 units", "147 units", "123 units", "141 units"]}, {"q": "If 3n &minus; 7 = 20, what is the value of 7n &minus; 3?", "opts": ["40", "60", "78", "105", "96"]}, {"q": "How many total diagonals can be drawn inside a regular 20-sided polygon?", "opts": ["170", "85", "140", "128", "102"]}, {"q": "On a map, 1.5 inches is equivalent to 240 miles. How many miles is equivalent to 9.5 inches?", "opts": ["1,200 miles", "1,840 miles", "1,520 miles", "1,260 miles", "1,360 miles"]}, {"q": "Simplify: (4<sup>2</sup> + (&minus;8) &minus; (&minus;12)) / (4 &minus; 2<sup>3</sup>)", "opts": ["2", "3", "&minus;4", "&minus;5", "&minus;6"]}, {"q": "Let A equal the set of numbers {18, 37, 23, 18} and B equal the set of numbers {33, 22, 14, 51}. Find the value of the positive difference of the medians of A and B.", "opts": ["7", "22", "5", "4", "13"]}, {"q": "How many different three-digit numbers can be made using the first four prime numbers if digits can repeat?", "opts": ["64", "24", "120", "12", "144"]}, {"q": "2023<sup>2</sup> &minus; 2022<sup>2</sup> =", "opts": ["14,161", "4,225", "4,485", "4,045", "3,127"]}, {"q": "What is the probability of rolling a pair of dice and getting a sum that is a prime number or greater than 9?", "opts": ["1/2", "17/36", "7/12", "23/36", "19/36"]}, {"q": "1 + 2 + 3 + ... + 18 + 19 + 20 =", "opts": ["220", "210", "200", "230", "240"]}, {"q": "What is the measure of the complement to &angle;ECD in a triangle with angles 83&deg;, 59&deg;, and &angle;ECD?", "opts": ["46&deg;", "7&deg;", "52&deg;", "31&deg;", "38&deg;"]}, {"q": "25,861 = _____ (Roman numeral)", "opts": ["<span style='text-decoration:overline'>XXV</span>CCLXI", "XXDDCCCLXI", "CCVDCCCLXI", "DXXDCCCLXI", "<span style='text-decoration:overline'>XXV</span>DCCCLXI"]}, {"q": "444<sub>5</sub> = _____ (base 7)", "opts": ["235", "243", "227", "216", "223"]}, {"q": "{10, 20, 30, 40, 50} &cap; {5, 10, 15, 20, 25, 30} &cap; {6, 12, 18, 24, 30} = set A. How many elements are in set A?", "opts": ["16", "12", "1", "3", "0"]}, {"q": "Moving only left and/or up on a 2&times;6 grid (from bottom-right M to top-left N), how many paths exist from point M to point N?", "opts": ["26", "28", "24", "20", "22"]}, {"q": "What is the geometric mean of the numbers 4, 8, and 54?", "opts": ["12", "10&radic;3", "10", "22", "24&radic;3"]}, {"q": "A motorcycle was clocked at a speed of 150 mi/hr. What was the motorcycle's speed in feet per second?", "opts": ["200", "210", "180", "190", "220"]}, {"q": "The graphs of which linear equations below have a slope of 3/4? I. 8y = 6x  II. 12x + 16y = 3  III. 2y &minus; 9 = 1.5x  IV. y = (3/4)x + 8", "opts": ["all of them", "I, II and III", "I, II, and IV", "II, III and IV", "I, III, and IV"]}, {"q": "What is the length of the line segment with endpoints of (&minus;10, 5) and (6, &minus;3)?", "opts": ["2&radic;65 units", "4&radic;5 units", "10&radic;2 units", "8&radic;5 units", "6&radic;2 units"]}, {"q": "The sum of three consecutive integers is 261. What is the value of five less than the least integer?", "opts": ["82", "83", "79", "81", "93"]}, {"q": "What is the simple interest of depositing $2,500 into an account paying 3% after 36 months?", "opts": ["$250", "$225", "$200", "$275", "$300"]}, {"q": "&minus;|11 &minus; 32| &minus; |19 + (&minus;11)| =", "opts": ["13", "51", "&minus;29", "&minus;73", "&minus;51"]}, {"q": "(18.8 &times; 10<sup>12</sup>) / (8 &times; 10<sup>&minus;3</sup>) = _____ (scientific notation)", "opts": ["2.35 &times; 10<sup>9</sup>", "2.35 &times; 10<sup>&minus;9</sup>", "235 &times; 10<sup>15</sup>", "2.35 &times; 10<sup>15</sup>", "2.35 &times; 10<sup>&minus;36</sup>"]}, {"q": "225&deg; = _____ (radians)", "opts": ["5&pi;/4", "3&pi;/2", "7&pi;/5", "5&pi;/2", "7&pi;/6"]}, {"q": "If (2x &minus; 11)(7x + 3) = 14x<sup>2</sup> + Bx &minus; 33, then find the value of &minus;2B.", "opts": ["154", "66", "166", "168", "142"]}, {"q": "What is the rate of decay of the exponential decay function f(x) = 3(3/5)<sup>x</sup>?", "opts": ["60%", "20%", "30%", "50%", "40%"]}, {"q": "If x varies directly as y, and x = 14 when y = 68, find the value of x when y = 408.", "opts": ["92", "88", "84", "82", "78"]}, {"q": "Steve and Joey are brothers. Steve can mow their lawn by himself in 50 minutes and Joey can mow their lawn by himself in 30 minutes. If they work together, how long would it take the brothers to mow their lawn?", "opts": ["17.25 minutes", "18.75 minutes", "16.5 minutes", "18.25 minutes", "16.25 minutes"]}, {"q": "Let S equal the sum of the roots of 0 = 4x<sup>2</sup> + 28x, and let P equal the product of the roots of 0 = 12 &minus; 2x<sup>2</sup>. Find the value of P &minus; S.", "opts": ["1", "&minus;4", "&minus;2", "6", "3"]}, {"q": "What is the inverse function of the function f(x) = 1 / (x + 2)?", "opts": ["f<sup>&minus;1</sup>(x) = x &minus; 2", "f<sup>&minus;1</sup>(x) = x + 2", "f<sup>&minus;1</sup>(x) = 1/x &minus; 2", "f<sup>&minus;1</sup>(x) = 1/x + 2", "f<sup>&minus;1</sup>(x) = (x &minus; 1)/2"]}, {"q": "What is the area of a scalene triangle with side lengths measuring 4 inches, 13 inches, and 15 inches?", "opts": ["36 in<sup>2</sup>", "24 in<sup>2</sup>", "32 in<sup>2</sup>", "28 in<sup>2</sup>", "18 in<sup>2</sup>"]}, {"q": "(2/3)x + 5/2 = 3/2 + (1/3)x, what is the value of &minus;7x?", "opts": ["&minus;49", "35", "&minus;28", "21", "14"]}, {"q": "If the solution to the system of linear equations: 3a &minus; b + 12c = 9; 2a + b &minus; 8c = &minus;10; 4a &minus; b &minus; 4c = &minus;8 is (a, b, c), then what is the sum of a + b + c?", "opts": ["&minus;3", "&minus;7", "1", "&minus;1", "0"]}, {"q": "(18a<sup>4</sup>b<sup>&minus;3</sup> / 2a<sup>&minus;2</sup>b<sup>&minus;5</sup>) &middot; (a<sup>&minus;1</sup>b<sup>5</sup> / 3a<sup>3</sup>b) &divide; (6a<sup>7</sup>b<sup>5</sup> / 2ab<sup>10</sup>) =", "opts": ["b<sup>11</sup> / a<sup>4</sup>", "3b<sup>11</sup> / a<sup>4</sup>", "9a<sup>8</sup>b", "3a<sup>8</sup>b", "9a<sup>8</sup> / b"]}, {"q": "In a circle, secants from A pass through B, C and D such that m&angle;A = (5x &minus; 9)&deg;, arc BD = (9x + 9)&deg;, and arc CD = (21x &minus; 23)&deg;. What is the measure of arc BD?", "opts": ["81&deg;", "72&deg;", "99&deg;", "108&deg;", "90&deg;"]}, {"q": "Simplify: 8 / (2 + &radic;3)", "opts": ["(8 &minus; &radic;3)/2", "(16 &minus; &radic;3)/2", "16 &minus; 8&radic;3", "16 + 8&radic;3", "8 + 4&radic;3"]}, {"q": "What is the volume of the sphere with the equation (x &minus; 9)<sup>2</sup> + (y &minus; 12)<sup>2</sup> + (z + 6)<sup>2</sup> &minus; 475 = &minus;219, with &pi; = 3?", "opts": ["16,384 units<sup>3</sup>", "3,072 units<sup>3</sup>", "6,144 units<sup>3</sup>", "12,288 units<sup>3</sup>", "24,576 units<sup>3</sup>"]}];
+const ANSWER_KEY = ["E", "E", "A", "B", "D", "B", "E", "A", "C", "D", "C", "A", "D", "E", "B", "A", "C", "D", "A", "A", "D", "E", "B", "C", "E", "A", "C", "B", "A", "E", "E", "D", "D", "B", "C", "D", "A", "E", "E", "C", "B", "A", "C", "B", "D", "E", "A", "B", "C", "A"];
+const TEST_TITLE = "2022-2023 TMSCA Middle School Mathematics Regional Test";
+const TOTAL_SECONDS = 40 * 60;
+
+let timeRemaining = TOTAL_SECONDS;
+let timerInterval = null;
+let examStarted = false;
+let examGraded = false;
+let lastReportText = "";
+
+// Anti-copy protections
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+  const key = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && ["c", "a", "u", "p"].includes(key)) {
+    e.preventDefault();
+  }
+  if (e.key === "F12") {
+    e.preventDefault();
+  }
+});
+
+function renderQuestions() {
+  const form = document.getElementById("quizForm");
+  form.innerHTML = "";
+  QUESTIONS.forEach((q, idx) => {
+    const num = idx + 1;
+    const card = document.createElement("div");
+    card.className = "question-card";
+    card.id = "qcard-" + num;
+
+    const qText = document.createElement("div");
+    qText.className = "q-text";
+    qText.innerHTML = num + ". " + q.q;
+    card.appendChild(qText);
+
+    const optsDiv = document.createElement("div");
+    optsDiv.className = "options";
+    ["A", "B", "C", "D", "E"].forEach((letter, oIdx) => {
+      const label = document.createElement("label");
+      label.className = "option-label";
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = "q" + num;
+      radio.value = letter;
+      radio.addEventListener("change", () => {
+        card.classList.add("answered");
+      });
+      const span = document.createElement("span");
+      span.innerHTML = "<strong>" + letter + ".</strong> " + q.opts[oIdx];
+      label.appendChild(radio);
+      label.appendChild(span);
+      optsDiv.appendChild(label);
+    });
+    card.appendChild(optsDiv);
+
+    const clearBtn = document.createElement("button");
+    clearBtn.type = "button";
+    clearBtn.className = "clear-btn";
+    clearBtn.textContent = "Clear / Skip";
+    clearBtn.addEventListener("click", () => {
+      if (examGraded) return;
+      document.querySelectorAll('input[name="q' + num + '"]').forEach(r => r.checked = false);
+      card.classList.remove("answered");
+    });
+    card.appendChild(clearBtn);
+
+    form.appendChild(card);
+  });
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+function startTimer() {
+  const timerEl = document.getElementById("timer");
+  timerInterval = setInterval(() => {
+    timeRemaining--;
+    timerEl.textContent = formatTime(timeRemaining);
+    if (timeRemaining <= 300) {
+      timerEl.classList.add("warning");
+    }
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval);
+      gradeTest(true);
+    }
+  }, 1000);
+}
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  const nameInput = document.getElementById("studentName").value.trim();
+  if (!nameInput) {
+    alert("Please enter your name before starting the exam.");
+    return;
+  }
+  examStarted = true;
+  document.getElementById("studentDisplay").textContent = "Student: " + nameInput;
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("testArea").classList.remove("hidden");
+  renderQuestions();
+  startTimer();
+});
+
+function gradeTest(autoSubmitted = false) {
+  if (examGraded) return;
+  examGraded = true;
+  clearInterval(timerInterval);
+
+  let correct = 0, wrong = 0, skipped = 0;
+  const rows = [];
+
+  for (let i = 1; i <= 50; i++) {
+    const selected = document.querySelector('input[name="q' + i + '"]:checked');
+    const ans = selected ? selected.value : "-";
+    const key = ANSWER_KEY[i - 1];
+    const card = document.getElementById("qcard-" + i);
+    let status = "Skipped (0)";
+    if (ans === "-") {
+      skipped++;
+    } else if (ans === key) {
+      correct++;
+      status = "Correct (+5)";
+      card.classList.add("correct");
+    } else {
+      wrong++;
+      status = "Wrong (-2)";
+      card.classList.add("wrong");
+    }
+    rows.push({ num: i, ans, key, status });
+  }
+
+  document.querySelectorAll('#quizForm input[type="radio"]').forEach(r => r.disabled = true);
+  document.getElementById("gradeBtn").disabled = true;
+
+  const score = correct * 5 - wrong * 2;
+  const attempted = correct + wrong;
+  const accuracy = attempted > 0 ? ((correct / attempted) * 100).toFixed(1) : "0.0";
+  const studentName = document.getElementById("studentName").value.trim();
+  const timeUsed = formatTime(TOTAL_SECONDS - timeRemaining);
+
+  document.getElementById("scoreSummary").innerHTML = `
+    <div class="score-box"><div class="val">${score} / 250</div><div class="lbl">Official Score</div></div>
+    <div class="score-box"><div class="val">${correct}</div><div class="lbl">Correct (+5)</div></div>
+    <div class="score-box"><div class="val">${wrong}</div><div class="lbl">Wrong (-2)</div></div>
+    <div class="score-box"><div class="val">${skipped}</div><div class="lbl">Skipped (0)</div></div>
+    <div class="score-box"><div class="val">${accuracy}%</div><div class="lbl">Accuracy</div></div>
+    <div class="score-box"><div class="val">${timeUsed}</div><div class="lbl">Time Used</div></div>
+  `;
+
+  let tableHtml = "<table><thead><tr><th>Q#</th><th>Your Answer</th><th>Key</th><th>Result</th></tr></thead><tbody>";
+  rows.forEach(r => {
+    tableHtml += `<tr><td>${r.num}</td><td>${r.ans}</td><td>${r.key}</td><td>${r.status}</td></tr>`;
+  });
+  tableHtml += "</tbody></table>";
+  document.getElementById("breakdownTable").innerHTML = tableHtml;
+  document.getElementById("resultsPanel").classList.remove("hidden");
+  document.getElementById("resultsPanel").scrollIntoView({ behavior: "smooth" });
+
+  lastReportText = [
+    `Test: ${TEST_TITLE}`,
+    `Student: ${studentName}`,
+    `Score: ${score} / 250`,
+    `Correct: ${correct} | Wrong: ${wrong} | Skipped: ${skipped}`,
+    `Accuracy: ${accuracy}% | Time Used: ${timeUsed}`,
+    autoSubmitted ? "(Auto-submitted when timer expired)" : "",
+    "",
+    "Question Breakdown:",
+    ...rows.map(r => `Q${r.num}: Your=${r.ans} | Key=${r.key} | ${r.status}`)
+  ].join("\n");
+
+  sendEmail();
+}
+
+function sendEmail() {
+  const studentName = document.getElementById("studentName").value.trim();
+  const subject = encodeURIComponent(`${TEST_TITLE} Results - ${studentName}`);
+  const body = encodeURIComponent(lastReportText);
+  window.location.href = `mailto:vishwanath.as@gmail.com?subject=${subject}&body=${body}`;
+}
+
+document.getElementById("gradeBtn").addEventListener("click", () => gradeTest(false));
+document.getElementById("emailBtn").addEventListener("click", sendEmail);
+document.getElementById("copyBtn").addEventListener("click", () => {
+  navigator.clipboard.writeText(lastReportText).then(() => {
+    alert("Results summary copied to clipboard!");
+  });
+});
+</script>
+</body>
+</html>
